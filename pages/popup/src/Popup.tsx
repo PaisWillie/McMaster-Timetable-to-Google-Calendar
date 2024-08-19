@@ -1,26 +1,50 @@
 import '@src/Popup.css';
 import { useStorageSuspense, withErrorBoundary, withSuspense } from '@extension/shared';
 import { exampleThemeStorage } from '@extension/storage';
-import type { ComponentPropsWithoutRef } from 'react';
+import { useEffect, useState, type ComponentPropsWithoutRef } from 'react';
 
 const Popup = () => {
   const theme = useStorageSuspense(exampleThemeStorage);
   const isLight = theme === 'light';
   const logo = isLight ? 'popup/logo_vertical.svg' : 'popup/logo_vertical_dark.svg';
 
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  useEffect(() => {
+    const checkUrl = async () => {
+      const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
+
+      const urlPattern = /mcmaster\.ca.*STUDENT_CENTER/;
+
+      if (tab.url && urlPattern.test(tab.url)) {
+        setIsButtonDisabled(false);
+      } else {
+        setIsButtonDisabled(true);
+      }
+    };
+
+    checkUrl();
+  }, []);
+
   const injectContentScript = async () => {
     const [tab] = await chrome.tabs.query({ currentWindow: true, active: true });
 
-    await chrome.scripting
-      .executeScript({
-        target: { tabId: tab.id! },
-        files: ['/content-runtime/index.iife.js'],
-      })
-      .catch(err => {
-        if (err.message.includes('Cannot access a chrome:// URL')) {
-          alert('You cannot inject script here!');
-        }
-      });
+    const urlPattern = /mcmaster\.ca.*STUDENT_CENTER/;
+
+    if (tab.url && urlPattern.test(tab.url)) {
+      await chrome.scripting
+        .executeScript({
+          target: { tabId: tab.id! },
+          files: ['/content-runtime/index.iife.js'],
+        })
+        .catch(err => {
+          if (err.message.includes('Cannot access a chrome:// URL')) {
+            alert('You cannot inject script here!');
+          }
+        });
+    } else {
+      alert('This script can only be injected on Mosaic Student Center.');
+    }
   };
 
   return (
@@ -35,7 +59,8 @@ const Popup = () => {
             'font-bold mt-4 py-1 px-4 rounded shadow hover:scale-105 ' +
             (isLight ? 'bg-blue-200 text-black' : 'bg-gray-700 text-white')
           }
-          onClick={injectContentScript}>
+          onClick={injectContentScript}
+          disabled={isButtonDisabled}>
           Click to inject Content Script
         </button>
         <ToggleButton>Toggle theme</ToggleButton>
