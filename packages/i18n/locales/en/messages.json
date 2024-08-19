@@ -1,11 +1,11 @@
 {
   "extensionDescription": {
     "description": "Extension description",
-    "message": "Chrome extension boilerplate developed with Vite, React and Typescript"
+    "message": "A Chrome extension to copy your Mosaic timetable to Google Calendar"
   },
   "extensionName": {
     "description": "Extension name",
-    "message": "Chrome extension boilerplate"
+    "message": "McMaster Timetable to Google Calendar"
   },
   "toggleTheme": {
     "message": "Toggle theme"
