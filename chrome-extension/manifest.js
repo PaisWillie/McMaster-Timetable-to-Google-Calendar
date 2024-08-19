@@ -46,15 +46,15 @@ const manifest = deepmerge(
     },
     content_scripts: [
       {
-        matches: ['http://*/*', 'https://*/*', '<all_urls>'],
+        matches: ['https://csprd.mcmaster.ca/*STUDENT_CENTER*'],
         js: ['content/index.iife.js'],
       },
       {
-        matches: ['http://*/*', 'https://*/*', '<all_urls>'],
+        matches: ['https://csprd.mcmaster.ca/*STUDENT_CENTER*'],
         js: ['content-ui/index.iife.js'],
       },
       {
-        matches: ['http://*/*', 'https://*/*', '<all_urls>'],
+        matches: ['https://csprd.mcmaster.ca/*STUDENT_CENTER*'],
         css: ['content.css'], // public folder
       },
     ],

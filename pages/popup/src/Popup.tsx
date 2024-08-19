@@ -8,6 +8,7 @@ const Popup = () => {
   const isLight = theme === 'light';
   const logo = isLight ? 'popup/logo_vertical.svg' : 'popup/logo_vertical_dark.svg';
 
+  const [tableData, setTableData] = useState<string[][]>([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   useEffect(() => {
